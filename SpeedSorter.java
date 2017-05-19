@@ -19,6 +19,7 @@ public class SpeedSorter extends JPanel implements MouseListener, MouseMotionLis
 	private int selected = -1, dragging = -1, initial = -1;
 	private boolean moveDrag = false;
 	private SpeedSorterControlPanel control;
+	private SpeedSorterMenuBar menuBar;
 	private int moves = 0;
 	
 	public SpeedSorter(){
@@ -33,6 +34,8 @@ public class SpeedSorter extends JPanel implements MouseListener, MouseMotionLis
 	
 		control = new SpeedSorterControlPanel(this);
 		
+		menuBar = new SpeedSorterMenuBar(control);
+		
 		addMouseListener(this);
 		addMouseMotionListener(this);
 	}
@@ -41,13 +44,16 @@ public class SpeedSorter extends JPanel implements MouseListener, MouseMotionLis
 		JFrame frame = new JFrame("SpeedSorter v1");
 		frame.setSize(500, 400);
 		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		SpeedSorter game = new SpeedSorter();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		
 		JPanel panel = new JPanel(new BorderLayout());
+		
+		SpeedSorter game = new SpeedSorter();
 		panel.add(game, BorderLayout.CENTER);
 		panel.add(game.control, BorderLayout.LINE_END);
 		
+		
+		frame.setJMenuBar(game.menuBar);
 		frame.add(panel);
 		frame.setVisible(true);
 	}
@@ -214,17 +220,13 @@ public class SpeedSorter extends JPanel implements MouseListener, MouseMotionLis
 		
 		this.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
 		
-		System.out.println(closest +" "+dragging+" "+initial);
 		if(closest != -1 && dragging == -1){//clicked in a box and not currently dragging
 			dragging = closest;				//begin dragging
 			initial = dragging;
-			System.out.println("Initial"+initial);
-			
 		}else if(column != -1 && dragging != -1){//currently dragging
 			shift(dragging, column);
 			dragging = column;
 			if(dragging != initial && !moveDrag){
-				System.out.println("Both"+dragging + ""+ initial);
 				moves++;
 				moveDrag = true;
 			}

@@ -110,8 +110,10 @@ public class SpeedSorterControlPanel extends JPanel{
 		moveField.setText(moves+"   ");
 	}
 	
-	private void reset(){
+	public void reset(){
+		actionButton.setText("Go!");
 		game.reset();
+		stopwatch.reset();
 		timeField.setText("00:00:00");
 	}
 	
@@ -137,8 +139,6 @@ public class SpeedSorterControlPanel extends JPanel{
 				src.setText("Pause");
 			} else if (text.equals("Restart")){
 				reset();
-				stopwatch.reset();
-				src.setText("Go!");
 			}
 			
 			game.repaint();
