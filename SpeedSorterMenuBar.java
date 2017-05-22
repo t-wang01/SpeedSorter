@@ -39,7 +39,6 @@ public class SpeedSorterMenuBar extends JMenuBar implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		JMenuItem src = (JMenuItem)e.getSource();
 		String text = src.getText();
 		
@@ -60,8 +59,5 @@ public class SpeedSorterMenuBar extends JMenuBar implements ActionListener{
 					"Published under MIT Lisense",
 					"About", JOptionPane.PLAIN_MESSAGE);
 		}
-		
-		
 	}
-	
 }

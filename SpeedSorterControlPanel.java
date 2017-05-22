@@ -19,15 +19,14 @@ import javax.swing.border.EmptyBorder;
 import org.apache.commons.lang3.time.StopWatch;
 
 public class SpeedSorterControlPanel extends JPanel{
-	
-	private SpeedSorter game;
+	private SpeedSorterGamePanel game;
 	private JLabel timeLabel, moveLabel;
 	private JTextField timeField, moveField;
 	private JButton actionButton;
 	private StopWatch stopwatch;
 	private Timer timer;
 	
-	public SpeedSorterControlPanel(SpeedSorter gaem){
+	public SpeedSorterControlPanel(SpeedSorterGamePanel gaem){
 		super(new GridBagLayout());
 		game = gaem;
 		

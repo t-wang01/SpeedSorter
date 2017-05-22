@@ -14,8 +14,6 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	private int boxHeight = 50, boxWidth = 50;
 	private int selected = -1, dragging = -1, initial = -1;
 	private boolean moveDrag = false;
-//	private SpeedSorterControlPanel control;
-//	private SpeedSorterMenuBar menuBar;
 	private SpeedSorter main;
 	private int moves = 0;
 	private int size = 16;
@@ -31,10 +29,6 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		Collections.shuffle(arr);
 		
 		setBackground(Color.LIGHT_GRAY);
-//	
-//		control = new SpeedSorterControlPanel(this);
-//		
-//		menuBar = new SpeedSorterMenuBar(control);
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -134,7 +128,6 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
 		if(!main.stopwatchIsRunning())
 			return;
 		
@@ -157,27 +150,16 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mouseEntered(MouseEvent e) {}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-//		control.pauseStopwatch();
-//		repaint();
-	}
+	public void mouseExited(MouseEvent e) {}
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void mousePressed(MouseEvent e) {}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 		dragging = -1;
 		initial = -1;
 		moveDrag = false;
@@ -186,7 +168,6 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
 		if(!main.stopwatchIsRunning())
 			return;
 		
@@ -216,9 +197,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
 		this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		repaint();
 	}
-		
 }
