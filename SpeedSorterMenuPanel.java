@@ -1,7 +1,10 @@
 import java.awt.Color;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
@@ -22,12 +25,15 @@ public class SpeedSorterMenuPanel extends JPanel implements MouseListener{
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		
-		//Local variables
-		int panelWidth = this.getWidth();
-		int panelHeight = this.getHeight();
+		String display = "Click anywhere to start...";
 		
-		g.setColor(Color.RED);
-		g.drawString("Click to continue", panelWidth/2, panelHeight/2);
+		//Code modified from Gilbert Le Blanc on https://stackoverflow.com/questions/14284754/
+        Graphics2D g2d = (Graphics2D) g;
+        FontMetrics fm = g2d.getFontMetrics();
+        Rectangle2D r = fm.getStringBounds(display, g2d);
+        int x = (this.getWidth() - (int) r.getWidth()) / 2;
+        int y = (this.getHeight() - (int) r.getHeight()) / 2 + fm.getAscent();
+        g.drawString(display, x, y);
 	}
 	
 	@Override
