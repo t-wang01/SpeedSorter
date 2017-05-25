@@ -47,7 +47,9 @@ public class SpeedSorter extends JFrame{
 		panel.add(control, BorderLayout.LINE_END);
 		
 		add(panel);
-		
+		setSize(1000,400);
+		setLocationRelativeTo(null);
+
 		revalidate();
 		repaint();
 	}

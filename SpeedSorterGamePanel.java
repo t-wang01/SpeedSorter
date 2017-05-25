@@ -13,11 +13,12 @@ import java.util.Collections;
 import javax.swing.JPanel;
 
 public class SpeedSorterGamePanel  extends JPanel implements MouseListener, MouseMotionListener{
-	private ArrayList<Integer> arr, last;
+	private ArrayList<Integer> humanArr, compArr, last;
 	private int boxHeight = 50, boxWidth = 50;
 	private int selected = -1, dragging = -1, initial = -1;
 	private boolean moveDrag = false;
 	private SpeedSorter main;
+	private SpeedSorterComputerSorter comp;
 	private int moves = 0;
 	private int size = 16;
 	
@@ -26,12 +27,15 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		
 		main = speedSorter;
 		
-		arr = new ArrayList<Integer>(size);
+		humanArr = new ArrayList<Integer>(size);
 		for(int i = 1; i <= size; i++)
-			arr.add(i);
-		Collections.shuffle(arr);
+			humanArr.add(i);
+		Collections.shuffle(humanArr);
 		
-		last = new ArrayList<Integer>(arr);
+		compArr = new ArrayList<Integer>(humanArr);
+		last = new ArrayList<Integer>(humanArr);
+		
+		comp = new SpeedSorterComputerSorter(0, 1000, main, compArr);
 		
 		setBackground(Color.LIGHT_GRAY);
 		
@@ -61,28 +65,47 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 			if(dragging >= size)	//In case user drags off right side
 				dragging = size-1;
 			
+			int incrX = panelWidth/(2*size);
+			int adjY = panelHeight/3;
+			
+			//Computer array box
+			g.setColor(Color.MAGENTA);
+			g.fillRect((2*i+1)*incrX - boxWidth/2, adjY - boxHeight/2, boxWidth, boxHeight);
+			g.setColor(Color.RED);
+			g.drawRect((2*i+1)*incrX - boxWidth/2, adjY - boxHeight/2, boxWidth, boxHeight);
+	        String number = String.valueOf(compArr.get(i));
+	        
+			//Code modified from Gilbert Le Blanc on https://stackoverflow.com/questions/14284754/
+	        Graphics2D g2d = (Graphics2D) g;
+	        FontMetrics fm = g2d.getFontMetrics();
+			Rectangle2D r = fm.getStringBounds(number, g2d);
+			int x = (2*i+1)*incrX - (int)r.getWidth()/2 + 1;
+			int y = panelHeight/3 - (int)r.getHeight()/2 + fm.getAscent();
+			g.drawString(number, x, y);
+			
+			g.setColor(Color.RED);
+			
 			//Special colors to boxes
 			if(i == dragging || i == selected){
-				g.fillRect((2*i+1)*panelWidth/(2*size) - boxWidth/2, panelHeight/2-boxHeight/2, boxWidth, boxHeight);
+				g.fillRect((2*i+1)*incrX - boxWidth/2, adjY*2 - boxHeight/2, boxWidth, boxHeight);
 				g.setColor(Color.BLACK);
-			} else if(i+1 == arr.get(i) && main.stopwatchIsRunning()){
+			} else if(i+1 == humanArr.get(i) && main.stopwatchIsRunning()){
 				g.setColor(Color.WHITE);
-				g.fillRect((2*i+1)*panelWidth/(2*size) - boxWidth/2, panelHeight/2-boxHeight/2, boxWidth, boxHeight);
+				g.fillRect((2*i+1)*incrX - boxWidth/2, adjY*2 - boxHeight/2, boxWidth, boxHeight);
 				g.setColor(Color.RED);
 			}
 			
 			//Draw box outline
-			g.drawRect((2*i+1)*panelWidth/(2*size) - boxWidth/2, panelHeight/2-boxHeight/2, boxWidth, boxHeight);
+			g.drawRect((2*i+1)*incrX - boxWidth/2, adjY*2 - boxHeight/2, boxWidth, boxHeight);
 
-			String number = String.valueOf(arr.get(i));
+			//Display numbers
+			number = String.valueOf(humanArr.get(i));
 			
 			//Code modified from Gilbert Le Blanc on https://stackoverflow.com/questions/14284754/
-	        Graphics2D g2d = (Graphics2D) g;
-	        FontMetrics fm = g2d.getFontMetrics();
-	        Rectangle2D r = fm.getStringBounds(number, g2d);
-	        int x = (2*i+1)*panelWidth/(2*size) - (int)r.getWidth()/2 + 1;
-	        int y = panelHeight/2 - (int)r.getHeight()/2 + fm.getAscent();
-	        g.drawString(number, x, y);	        
+	        r = fm.getStringBounds(number, g2d);
+	        x = (2*i+1)*incrX - (int)r.getWidth()/2 + 1;
+	        y = panelHeight*2/3 - (int)r.getHeight()/2 + fm.getAscent();
+	        g.drawString(number, x, y);
 		}
 		
 		//Change moves field
@@ -90,15 +113,15 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	}
 	
 	public void reset(){
-		Collections.shuffle(arr);
-		last = new ArrayList<Integer>(arr);
+		Collections.shuffle(humanArr);
+		last = new ArrayList<Integer>(humanArr);
 		moves = 0;
 		repaint();
 	}
 	
 	private boolean isInOrder(){
 		for(int i = 1; i < size; i++){
-			if(arr.get(i) <= arr.get(i-1))
+			if(humanArr.get(i) <= humanArr.get(i-1))
 				return false;
 		}
 		main.stopStopwatch();
@@ -108,9 +131,9 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	private void swap(int ind0, int ind1){
 		if(Math.min(ind0, ind1)<0 || Math.max(ind0, ind1)>=size)
 			return;
-		int temp = arr.get(ind0);
-		arr.set(ind0, arr.get(ind1));
-		arr.set(ind1, temp);
+		int temp = humanArr.get(ind0);
+		humanArr.set(ind0, humanArr.get(ind1));
+		humanArr.set(ind1, temp);
 	}
 	
 	private void shift(int ind0, int ind1){
@@ -126,7 +149,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	}
 	
 	private int clickedBox(int x, int y){
-		int yDist = Math.abs(y - getHeight()/2);
+		int yDist = Math.abs(y - getHeight()*2/3);
 		int closest = (int)(x)/(getWidth()/size);
 		int xPos = (2*closest+1)*getWidth()/(2*size);
 		int xDist = Math.abs(x - xPos);
@@ -146,6 +169,10 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		return -1;
 	}
 	
+	//TODO Not finished
+	public void updateCompArr(ArrayList<Integer> in){};
+	
+	
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -161,7 +188,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 				swap(selected, closest);
 				if(selected != closest){
 					moves++;
-					last = new ArrayList<Integer>(arr);
+					last = new ArrayList<Integer>(humanArr);
 				}
 				selected = -1;
 			} else
@@ -199,7 +226,8 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		int closest = clickedBox(x, y);
 		int column = draggedPos(x);
 		
-		this.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+		if(dragging != -1)
+			this.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
 		
 		if(closest != -1 && dragging == -1){//clicked in a box and not currently dragging
 			dragging = closest;				//begin dragging
@@ -209,7 +237,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 			dragging = column;
 			if(dragging != initial && !moveDrag){
 				moves++;
-				last = new ArrayList<Integer>(arr);
+				last = new ArrayList<Integer>(humanArr);
 				moveDrag = true;
 			}
 		}
