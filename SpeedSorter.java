@@ -9,6 +9,7 @@ public class SpeedSorter extends JFrame{
 	private SpeedSorterGamePanel game;
 	private SpeedSorterControlPanel control;
 	private SpeedSorterMenuBar menuBar;
+	private SpeedSorterComputerSorter comp;
 	private JPanel panel;
 	
 	public SpeedSorter(){
@@ -18,9 +19,13 @@ public class SpeedSorter extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		
 		menu = new SpeedSorterMenuPanel(this);
+		comp = new SpeedSorterComputerSorter(this);
+		control = new SpeedSorterControlPanel();
+		menuBar = new SpeedSorterMenuBar(this);
 		game = new SpeedSorterGamePanel(this);
-		control = new SpeedSorterControlPanel(game);
-		menuBar = new SpeedSorterMenuBar(control);
+		
+		control.addGamePanel(this);
+
 		
 		panel = new JPanel(new BorderLayout());
 		panel.add(menu, BorderLayout.CENTER);
@@ -54,15 +59,19 @@ public class SpeedSorter extends JFrame{
 		repaint();
 	}
 	
-	public boolean stopwatchIsRunning(){
-		return control.stopwatchIsRunning();
+	public SpeedSorterControlPanel getControlPanel(){
+		return control;
 	}
 	
-	public void stopStopwatch(){
-		control.stopStopwatch();
+	public SpeedSorterGamePanel getGamePanel(){
+		return game;
 	}
 	
-	public void setMoves(int moves){
-		control.setMoves(moves);
+	public SpeedSorterMenuPanel getMenuPanel(){
+		return menu;
+	}
+	
+	public SpeedSorterComputerSorter getComputerSorter(){
+		return comp;
 	}
 }

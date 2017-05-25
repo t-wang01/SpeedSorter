@@ -14,10 +14,11 @@ import javax.swing.JPanel;
 
 public class SpeedSorterGamePanel  extends JPanel implements MouseListener, MouseMotionListener{
 	private ArrayList<Integer> humanArr, compArr, last;
-	private int boxHeight = 50, boxWidth = 50;
+	private final int boxHeight = 50, boxWidth = 50;
 	private int selected = -1, dragging = -1, initial = -1;
-	private boolean moveDrag = false;
+	private boolean isDragging = false;
 	private SpeedSorter main;
+	private SpeedSorterControlPanel control;
 	private SpeedSorterComputerSorter comp;
 	private int moves = 0;
 	private int size = 16;
@@ -26,6 +27,8 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		super();
 		
 		main = speedSorter;
+		control = main.getControlPanel();
+		comp = main.getComputerSorter();
 		
 		humanArr = new ArrayList<Integer>(size);
 		for(int i = 1; i <= size; i++)
@@ -35,7 +38,9 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		compArr = new ArrayList<Integer>(humanArr);
 		last = new ArrayList<Integer>(humanArr);
 		
-		comp = new SpeedSorterComputerSorter(0, 1000, main, compArr);
+		comp.setTimer(1000);
+		comp.setArray(compArr);
+		comp.startTimer();
 		
 		setBackground(Color.LIGHT_GRAY);
 		
@@ -52,7 +57,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		//Set background
 		if(isInOrder())
 			super.setBackground(Color.WHITE);
-		else if(!main.stopwatchIsRunning())
+		else if(!control.stopwatchIsRunning())
 			super.setBackground(Color.GRAY);
 		else
 			super.setBackground(Color.LIGHT_GRAY);
@@ -89,7 +94,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 			if(i == dragging || i == selected){
 				g.fillRect((2*i+1)*incrX - boxWidth/2, adjY*2 - boxHeight/2, boxWidth, boxHeight);
 				g.setColor(Color.BLACK);
-			} else if(i+1 == humanArr.get(i) && main.stopwatchIsRunning()){
+			} else if(i+1 == humanArr.get(i) && control.stopwatchIsRunning()){
 				g.setColor(Color.WHITE);
 				g.fillRect((2*i+1)*incrX - boxWidth/2, adjY*2 - boxHeight/2, boxWidth, boxHeight);
 				g.setColor(Color.RED);
@@ -109,12 +114,14 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		}
 		
 		//Change moves field
-		main.setMoves(moves);
+		control.setMoves(moves);
 	}
 	
 	public void reset(){
 		Collections.shuffle(humanArr);
 		last = new ArrayList<Integer>(humanArr);
+		compArr = new ArrayList<Integer>(humanArr);
+		comp.setArray(compArr);
 		moves = 0;
 		repaint();
 	}
@@ -124,7 +131,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 			if(humanArr.get(i) <= humanArr.get(i-1))
 				return false;
 		}
-		main.stopStopwatch();
+		control.stopStopwatch();
 		return true;
 	}
 	
@@ -176,7 +183,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if(!main.stopwatchIsRunning())
+		if(!control.stopwatchIsRunning())
 			return;
 		
 		int x = e.getX(); int y = e.getY();
@@ -212,13 +219,13 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	public void mouseReleased(MouseEvent e) {
 		dragging = -1;
 		initial = -1;
-		moveDrag = false;
+		isDragging = false;
 		repaint();
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if(!main.stopwatchIsRunning())
+		if(!control.stopwatchIsRunning())
 			return;
 		
 		int x = e.getX(); int y = e.getY();
@@ -235,10 +242,10 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		}else if(column != -1 && dragging != -1){//currently dragging
 			shift(dragging, column);
 			dragging = column;
-			if(dragging != initial && !moveDrag){
+			if(dragging != initial && !isDragging){
 				moves++;
 				last = new ArrayList<Integer>(humanArr);
-				moveDrag = true;
+				isDragging = true;
 			}
 		}
 		

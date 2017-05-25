@@ -11,9 +11,9 @@ public class SpeedSorterMenuBar extends JMenuBar implements ActionListener{
 	private JMenuItem file_reset, file_exit, help_howToPlay, help_about;
 	private SpeedSorterControlPanel control;
 	
-	public SpeedSorterMenuBar(SpeedSorterControlPanel panel){
+	public SpeedSorterMenuBar(SpeedSorter main){
 		super();
-		control = panel;
+		control = main.getControlPanel();
 		
 		file = new JMenu("File");
 		help = new JMenu("Help");

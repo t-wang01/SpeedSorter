@@ -26,15 +26,18 @@ public class SpeedSorterControlPanel extends JPanel{
 	private StopWatch stopwatch;
 	private Timer timer;
 	
-	public SpeedSorterControlPanel(SpeedSorterGamePanel gaem){
+	public SpeedSorterControlPanel(){
 		super(new GridBagLayout());
-		game = gaem;
 		
 		setUpGUIFields();
 		
 		setUpStopwatch();
 		
 		setUpGUI();
+	}
+	
+	public void addGamePanel(SpeedSorter main){
+		game = main.getGamePanel();
 	}
 	
 	private void setUpGUIFields(){
