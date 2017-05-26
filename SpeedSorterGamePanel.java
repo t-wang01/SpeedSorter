@@ -38,7 +38,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		compArr = new ArrayList<Integer>(humanArr);
 		last = new ArrayList<Integer>(humanArr);
 		
-		comp.setTimer(1000);
+		comp.setTimer(500);
 		comp.setArray(compArr);
 		comp.startTimer();
 		
@@ -72,13 +72,25 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 			
 			int incrX = panelWidth/(2*size);
 			int adjY = panelHeight/3;
+			int[] compare = comp.getHighlights();
 			
 			//Computer array box
-			g.setColor(Color.MAGENTA);
-			g.fillRect((2*i+1)*incrX - boxWidth/2, adjY - boxHeight/2, boxWidth, boxHeight);
+			if(i+1 == compArr.get(i) && control.stopwatchIsRunning()){
+				g.setColor(Color.LIGHT_GRAY);
+				g.fillRect((2*i+1)*incrX - boxWidth/2, adjY*2 - boxHeight/2, boxWidth, boxHeight);
+			} else {
+				g.setColor(Color.GRAY);
+				g.fillRect((2*i+1)*incrX - boxWidth/2, adjY - boxHeight/2, boxWidth, boxHeight);
+			}
 			g.setColor(Color.RED);
+			if(i+1 == compArr.get(i))
+				g.setColor(Color.BLACK);
+			if(i == compare[0] || i == compare[1])
+				g.setColor(Color.YELLOW);
 			g.drawRect((2*i+1)*incrX - boxWidth/2, adjY - boxHeight/2, boxWidth, boxHeight);
 	        String number = String.valueOf(compArr.get(i));
+	        
+	        
 	        
 			//Code modified from Gilbert Le Blanc on https://stackoverflow.com/questions/14284754/
 	        Graphics2D g2d = (Graphics2D) g;

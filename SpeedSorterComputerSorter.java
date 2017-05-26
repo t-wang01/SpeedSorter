@@ -8,17 +8,18 @@ public class SpeedSorterComputerSorter implements ActionListener{
 	private Timer timer;
 	private ArrayList<Integer> arr;
 	private SpeedSorter main;
-	private int i = 0, j = 0, comp0 = 0, comp1 = 1, lowest = 0;;
+	private int i = 0, j = 0, comp0 = 0, comp1 = 1, lowInd = 0, sortMethod=0;
 	
 	public SpeedSorterComputerSorter(SpeedSorter game){
 		main = game;
-		timer = new Timer(1000, this);
+		timer = new Timer(500, this);
 	}
 	
 	public SpeedSorterComputerSorter(int sortType, int delay, SpeedSorter speed, ArrayList<Integer> compArr){
 		timer = new Timer(delay, this);
 		arr = compArr;
 		main = speed;
+		sortMethod = sortType;
 	}
 	
 	public void setArray(ArrayList<Integer> array){
@@ -48,6 +49,13 @@ public class SpeedSorterComputerSorter implements ActionListener{
 		return true;
 	}
 	
+	public int[] getHighlights(){
+		int[] out = new int[2];
+		out[0] = j;
+		out[1] = lowInd;
+		return out;
+	}
+	
 	private void swap(int ind0, int ind1){
 		if(Math.min(ind0, ind1)<0 || Math.max(ind0, ind1)>=arr.size())
 			return;
@@ -55,40 +63,33 @@ public class SpeedSorterComputerSorter implements ActionListener{
 		arr.set(ind0, arr.get(ind1));
 		arr.set(ind1, temp);
 	}
+
+	private void selectionSort(){
+		if(j != arr.size()){	//search
+			if(arr.get(j) < arr.get(lowInd))
+				lowInd = j;
+			j++;
+		} else {				//finished a loop
+			swap(i, lowInd);
+			j = ++i;
+			lowInd = i;
+		}
+	}
 	
-/**
- * public static void selectionSort(int[] arr){  
-        for (int i = 0; i < arr.length - 1; i++)  
-        {  
-            int index = i;  
-            for (int j = i + 1; j < arr.length; j++){  
-                if (arr[j] < arr[index]){  
-                    index = j;//searching for lowest index  
-                }  
-            }  
-            int smallerNumber = arr[index];   
-            arr[index] = arr[i];  
-            arr[i] = smallerNumber;  
-        }  
- */
+	private void insertionSort(){
+//		if()
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(main.getControlPanel().stopwatchIsRunning()){
-			int swap0, swap1;
-			int index = i;
-            if (arr.get(j) < arr.get(index)){  
-                index = j;//searching for lowest index
-            }  
-			if(j==arr.size()){
-	            swap0 = index; swap1 = i;
-				swap(swap0, swap1);
-				if(i<arr.size())
-					i++;
+			switch(sortMethod){
+				case 0:	selectionSort(); 	break;		
+				case 1: insertionSort();	break;
 			}
 		}
+		main.getGamePanel().repaint();
 		if(isInOrder())
 			main.getControlPanel().stopStopwatch();
-		main.getGamePanel().repaint();
 	}
 }
