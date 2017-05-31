@@ -8,7 +8,8 @@ public class SpeedSorterComputerSorter implements ActionListener{
 	private Timer timer;
 	private ArrayList<Integer> arr;
 	private SpeedSorter main;
-	private int i = 0, j = 0, comp0 = 0, comp1 = 1, lowInd = 0, sortMethod=0;
+	private int i = 0, j = 0, lowInd = 0, insInd = 0, sortMethod=0;
+	private boolean insSwapNext = false;
 	
 	public SpeedSorterComputerSorter(SpeedSorter game){
 		main = game;
@@ -22,9 +23,20 @@ public class SpeedSorterComputerSorter implements ActionListener{
 		sortMethod = sortType;
 	}
 	
+	private void resetInts(){
+		i = 0;
+		j = 0; 
+		insInd = 0;
+		lowInd = 0; 
+	}
+	
+	public void setMethod(int sortType){
+		sortMethod = sortType;
+	}
+	
 	public void setArray(ArrayList<Integer> array){
 		arr = array;
-		i = 0;
+		resetInts();
 	}
 	
 	public void setTimer(int delay){
@@ -51,8 +63,16 @@ public class SpeedSorterComputerSorter implements ActionListener{
 	
 	public int[] getHighlights(){
 		int[] out = new int[2];
-		out[0] = j;
-		out[1] = lowInd;
+		switch(sortMethod){
+			case 0:
+				out[0] = j;
+				out[1] = lowInd;
+				break;
+			case 1:
+				out[0] = j-1;
+				out[1] = j;
+		}
+
 		return out;
 	}
 	
@@ -77,7 +97,14 @@ public class SpeedSorterComputerSorter implements ActionListener{
 	}
 	
 	private void insertionSort(){
-//		if()
+		if(j > 0 && arr.get(j-1)>arr.get(j)){	//insert
+			swap(j, j-1);
+			j--;
+		} else {								//finished a loop
+			i++;
+			j = i;
+		}
+		
 	}
 	
 	@Override

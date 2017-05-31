@@ -25,6 +25,7 @@ public class SpeedSorterControlPanel extends JPanel{
 	private JButton actionButton;
 	private StopWatch stopwatch;
 	private Timer timer;
+	private SpeedSorterComputerSorter comp;
 	
 	public SpeedSorterControlPanel(){
 		super(new GridBagLayout());
@@ -38,6 +39,7 @@ public class SpeedSorterControlPanel extends JPanel{
 	
 	public void addGamePanel(SpeedSorter main){
 		game = main.getGamePanel();
+		comp = main.getComputerSorter();
 	}
 	
 	private void setUpGUIFields(){
@@ -131,6 +133,7 @@ public class SpeedSorterControlPanel extends JPanel{
 			String text = src.getText();
 			if(text.equals("Go!")){
 				timer.start();
+				comp.startTimer();
 				stopwatch.start();
 				src.setText("Pause");
 			} else if(text.equals("Pause")){

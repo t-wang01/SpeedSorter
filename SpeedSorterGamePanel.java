@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 public class SpeedSorterGamePanel  extends JPanel implements MouseListener, MouseMotionListener{
 	private ArrayList<Integer> humanArr, compArr, last;
 	private final int boxHeight = 50, boxWidth = 50;
-	private int selected = -1, dragging = -1, initial = -1;
+	private int swap0 = -1, dragging = -1, initial = -1;
 	private boolean isDragging = false;
 	private SpeedSorter main;
 	private SpeedSorterControlPanel control;
@@ -38,8 +38,9 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		compArr = new ArrayList<Integer>(humanArr);
 		last = new ArrayList<Integer>(humanArr);
 		
-		comp.setTimer(500);
+		comp.setTimer(300);	//~45s selection sort
 		comp.setArray(compArr);
+		comp.setMethod(1);
 		comp.startTimer();
 		
 		setBackground(Color.LIGHT_GRAY);
@@ -103,7 +104,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 			g.setColor(Color.RED);
 			
 			//Special colors to boxes
-			if(i == dragging || i == selected){
+			if(i == dragging || i == initial || i == swap0){
 				g.fillRect((2*i+1)*incrX - boxWidth/2, adjY*2 - boxHeight/2, boxWidth, boxHeight);
 				g.setColor(Color.BLACK);
 			} else if(i+1 == humanArr.get(i) && control.stopwatchIsRunning()){
@@ -135,6 +136,10 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		compArr = new ArrayList<Integer>(humanArr);
 		comp.setArray(compArr);
 		moves = 0;
+		swap0 = -1;
+		initial = -1;
+		isDragging = false;
+		dragging = -1;
 		repaint();
 	}
 	
@@ -148,15 +153,16 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	}
 	
 	private void swap(int ind0, int ind1){
-		if(Math.min(ind0, ind1)<0 || Math.max(ind0, ind1)>=size)
+		if(Math.min(ind0, ind1)<0 || Math.max(ind0, ind1)>=size || ind0 == ind1)
 			return;
 		int temp = humanArr.get(ind0);
 		humanArr.set(ind0, humanArr.get(ind1));
 		humanArr.set(ind1, temp);
+		moves++;
 	}
 	
 	private void shift(int ind0, int ind1){
-		if(ind0==ind1)
+		if(Math.min(ind0, ind1)<0 || Math.max(ind0, ind1)>=size || ind0 == ind1)
 			return;
 		if(ind0 > ind1){
 			for(; ind0 > ind1; ind0--)
@@ -179,42 +185,82 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	}
 	
 	private int draggedPos(int x){
-		int closest = (int)(x)/(getWidth()/size);
+		int closest = (int)(x/(getWidth()/size));
 		int xPos = (2*closest+1)*getWidth()/(size*2);
 		int xDist = Math.abs(x - xPos);
-		
+
 		if(xDist<boxWidth/2) //correct column
 			return closest;
 		return -1;
 	}
-	
-	//TODO Not finished
-	public void updateCompArr(ArrayList<Integer> in){};
-	
-	
-	
+
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mousePressed(MouseEvent e) {
 		if(!control.stopwatchIsRunning())
 			return;
 		
-		int x = e.getX(); int y = e.getY();
+		int x = e.getX(), y = e.getY();
 		
-		int closest = clickedBox(x, y);
+		initial = clickedBox(x, y);
 		
-		if(closest != -1){ //Selected a box
-			if(selected != -1){
-				swap(selected, closest);
-				if(selected != closest){
-					moves++;
-					last = new ArrayList<Integer>(humanArr);
-				}
-				selected = -1;
-			} else
-				selected = closest;
-		} else {
-			selected = -1;
+		repaint();
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {		
+		if(!control.stopwatchIsRunning())
+			return;
+		
+		int x = e.getX();
+		
+		int column = draggedPos(x);
+		
+		if(!isDragging && column!=-1){
+			isDragging = column!=initial;
+			dragging = initial;
 		}
+		if(isDragging && column!=-1){
+			shift(dragging, column);
+			dragging = column;
+			swap0 = -1;
+			initial = -1;
+		}
+		
+		//Change cursor
+		this.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
+			
+		repaint();
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {		
+		if(!control.stopwatchIsRunning())
+			return;
+		
+		int x = e.getX(), y = e.getY();
+		
+		int closest = clickedBox(x,y);
+		
+		if(initial == closest){
+			if(swap0 == -1)
+				swap0 = initial;
+			else{
+				swap(swap0, closest);
+				swap0 = -1;
+			}
+		}
+		initial = -1;
+		isDragging = false;
+		dragging = -1;
+		repaint();
+	}
+	
+	@Override
+	public void mouseClicked(MouseEvent e) {}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 		repaint();
 	}
 
@@ -224,51 +270,4 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	@Override
 	public void mouseExited(MouseEvent e) {}
 
-	@Override
-	public void mousePressed(MouseEvent e) {}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		dragging = -1;
-		initial = -1;
-		isDragging = false;
-		repaint();
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		if(!control.stopwatchIsRunning())
-			return;
-		
-		int x = e.getX(); int y = e.getY();
-		
-		int closest = clickedBox(x, y);
-		int column = draggedPos(x);
-		
-		if(dragging != -1)
-			this.setCursor(new Cursor(Cursor.E_RESIZE_CURSOR));
-		
-		if(closest != -1 && dragging == -1){//clicked in a box and not currently dragging
-			dragging = closest;				//begin dragging
-			initial = dragging;
-		}else if(column != -1 && dragging != -1){//currently dragging
-			shift(dragging, column);
-			dragging = column;
-			if(dragging != initial && !isDragging){
-				moves++;
-				last = new ArrayList<Integer>(humanArr);
-				isDragging = true;
-			}
-		}
-		
-		selected = -1;
-		
-		repaint();
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-		repaint();
-	}
 }
