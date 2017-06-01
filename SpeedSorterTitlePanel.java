@@ -8,10 +8,10 @@ import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
 
-public class SpeedSorterMenuPanel extends JPanel implements MouseListener{
+public class SpeedSorterTitlePanel extends JPanel implements MouseListener{
 	private SpeedSorter main;
 	
-	public SpeedSorterMenuPanel(SpeedSorter speedSorter){
+	public SpeedSorterTitlePanel(SpeedSorter speedSorter){
 		super();
 		
 		main = speedSorter;
