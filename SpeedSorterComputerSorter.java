@@ -40,7 +40,8 @@ public class SpeedSorterComputerSorter implements ActionListener{
 	}
 	
 	public void setTimer(int delay){
-		timer = new Timer(delay, this);
+		timer.setDelay(delay);
+		timer.setInitialDelay(delay);
 	}
 	
 	public void startTimer(){

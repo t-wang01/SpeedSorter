@@ -22,10 +22,11 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	private SpeedSorterComputerSorter comp;
 	private int moves = 0;
 	private int size = 16;
+	private int[][] levelData = {{0, 300},{1, 300}};
 	
 	public SpeedSorterGamePanel(SpeedSorter speedSorter){
 		super();
-		
+				
 		main = speedSorter;
 		control = main.getControlPanel();
 		comp = main.getComputerSorter();
@@ -40,13 +41,21 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		
 		comp.setTimer(300);	//~45s selection sort
 		comp.setArray(compArr);
-		comp.setMethod(1);
+		comp.setMethod(0);
 		comp.startTimer();
 		
 		setBackground(Color.LIGHT_GRAY);
 		
 		addMouseListener(this);
 		addMouseMotionListener(this);
+	}
+	
+	public void setLevel(int level, boolean isPossible){
+		comp.setMethod(levelData[level-1][0]);
+		if(isPossible)
+			comp.setTimer(levelData[level-1][1]);
+		else
+			comp.setTimer(0);
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 public class SpeedSorter extends JFrame{
-	private SpeedSorterMenuPanel menu;
+	private SpeedSorterTitlePanel menu;
 	private SpeedSorterGamePanel game;
 	private SpeedSorterControlPanel control;
 	private SpeedSorterMenuBar menuBar;
@@ -18,7 +18,7 @@ public class SpeedSorter extends JFrame{
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		
-		menu = new SpeedSorterMenuPanel(this);
+		menu = new SpeedSorterTitlePanel(this);
 		comp = new SpeedSorterComputerSorter(this);
 		control = new SpeedSorterControlPanel();
 		menuBar = new SpeedSorterMenuBar(this);
@@ -44,7 +44,9 @@ public class SpeedSorter extends JFrame{
 		game.setVisible(true);
 	}
 	
-	public void menuToGame(){
+	public void menuToGame(int level, boolean isPossible){
+		game.setLevel(level, isPossible);
+		
 		remove(panel);
 		
 		panel.remove(menu);
@@ -67,7 +69,7 @@ public class SpeedSorter extends JFrame{
 		return game;
 	}
 	
-	public SpeedSorterMenuPanel getMenuPanel(){
+	public SpeedSorterTitlePanel getMenuPanel(){
 		return menu;
 	}
 	
