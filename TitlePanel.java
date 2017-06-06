@@ -13,6 +13,7 @@ import javax.swing.UIManager;
 public class TitlePanel extends JPanel implements MouseListener{
 	private SpeedSorter main;
 	private boolean literallyImpossible = false;
+	private boolean[] levelsUnlocked = new boolean[]{true, true, false};
 //	private JPanel titleImage;
 //	private JPanel levelOptions;
 //	private JPanel possibilityPanel;
@@ -67,7 +68,10 @@ public class TitlePanel extends JPanel implements MouseListener{
 		String[] options = {"Level 1","Level 2"};
 		String[] infos = {"Selection sort 300ms","Insertion sort 300ms"};
 		
-		for(int i = 0; i < 2; i++){			
+		for(int i = 0; i < 2; i++){
+			if(!levelsUnlocked[i])
+				break;
+			
 			g.setColor(Color.BLACK);
 			g.drawRect(initx+gap, inity, width-(2*gap), height);
 			

@@ -1,6 +1,8 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 
 import javax.swing.Timer;
 
@@ -8,7 +10,8 @@ public class ComputerSorter implements ActionListener{
 	private Timer timer;
 	private ArrayList<SortItem> arr;
 	private SpeedSorter main;
-	private int i = 0, j = 0, lowInd = 0, insInd = 0, sortMethod=0;
+	private int i = 0, j = 0, lowInd = 0, min = 0, max = 0, pivot = 0, sortMethod=0;
+	private Deque<int[]> stack = new ArrayDeque<int[]>();
 	private boolean insSwapNext = false;
 	
 	public ComputerSorter(SpeedSorter game){
@@ -24,10 +27,13 @@ public class ComputerSorter implements ActionListener{
 	}
 	
 	private void resetInts(){
-		i = 0;
-		j = 0; 
-		insInd = 0;
+		i = 0; j = 0; 
 		lowInd = 0; 
+		min = 0; max = arr.size()-1;
+		pivot = (min + max)/2;
+		
+		stack = new ArrayDeque<int[]>();
+		stack.push(new int[]{min, max});
 	}
 	
 	public void setMethod(int sortType){
@@ -63,20 +69,20 @@ public class ComputerSorter implements ActionListener{
 	private void selectionSort(){
 		if(j != arr.size()){	//search for lowest value
 			if(j>i && j-1!=lowInd)
-				arr.get(j-1).setStatus(SortItemStatus.NORMAL);
+				setStatus(j-1, SortItemStatus.NORMAL);
 			
 			//if arr[j]<arr[lowInd], set new lowInd to value of j
 			if(arr.get(j).compareTo(arr.get(lowInd))<0){
-				arr.get(lowInd).setStatus(SortItemStatus.NORMAL);
+				setStatus(lowInd,SortItemStatus.NORMAL);
 				lowInd = j;
-				arr.get(lowInd).setStatus(SortItemStatus.COMPARED);
+				setStatus(lowInd,SortItemStatus.COMPARED);
 			}
 			
-			arr.get(j).setStatus(SortItemStatus.COMPARED);
+			setStatus(j,SortItemStatus.COMPARED);
 			j++;
 		} else {				//finished a loop
 			swap(i, lowInd);
-			arr.get(i).setStatus(SortItemStatus.SORTED);
+			setStatus(i,SortItemStatus.SORTED);
 			
 			j = ++i;
 			lowInd = i;
@@ -86,7 +92,7 @@ public class ComputerSorter implements ActionListener{
 				main.getControlPanel().stopStopwatch();
 				timer.stop();
 			} else
-				arr.get(arr.size()-1).setStatus(SortItemStatus.NORMAL);
+				setStatus(arr.size()-1,SortItemStatus.NORMAL);
 		}
 	}
 	
@@ -94,21 +100,20 @@ public class ComputerSorter implements ActionListener{
 		if(j > 0 && arr.get(j-1).compareTo(arr.get(j))>0){	//insert
 			//Set previous item to sorted
 			if(j!=i)
-				arr.get(j+1).setStatus(SortItemStatus.SORTED);
+				setStatus(j+1,SortItemStatus.SORTED);
 			
 			//Set new items to be COMPARED
-			arr.get(j).setStatus(SortItemStatus.COMPARED);
-			arr.get(j-1).setStatus(SortItemStatus.COMPARED);
+			setStatus(new int[]{j,j-1},SortItemStatus.COMPARED);
 			swap(j, j-1);
 			
 			j--;
 		} else {								//finished a loop
 			//Set statuses back to SORTED
 			if(j!=i)
-				arr.get(j+1).setStatus(SortItemStatus.SORTED);
-			arr.get(j).setStatus(SortItemStatus.SORTED);
+				setStatus(j+1,SortItemStatus.SORTED);
+			setStatus(j,SortItemStatus.SORTED);
 			if(j!=0)
-				arr.get(j-1).setStatus(SortItemStatus.SORTED);
+				setStatus(j-1,SortItemStatus.SORTED);
 			
 			j = ++i;
 			
@@ -118,11 +123,70 @@ public class ComputerSorter implements ActionListener{
 				timer.stop();
 			} else {
 				//If not finished, set new items to be COMPARED
-				arr.get(j).setStatus(SortItemStatus.COMPARED);
-				arr.get(j-1).setStatus(SortItemStatus.COMPARED);
+				setStatus(new int[]{j,j-1},SortItemStatus.COMPARED);
 			}
 		}
 		
+	}
+	
+	private void quickSort(){
+		//Modified code from Yaroslav S. on https://stackoverflow.com/questions/19124752/
+		if(j == 0 && i == 0){ //initial
+			popStack();
+		} else if(i >= j){	//Completed a partition
+			setStatus(pivot, SortItemStatus.SORTED);
+			
+		    if(min < (pivot - 1))
+		        stack.add(new int[] {min, pivot - 1});
+		    else
+		    	setStatus(min, SortItemStatus.SORTED);
+		    
+		    if(max > (pivot + 1)) 
+		        stack.add(new int[] {pivot + 1, max});
+		    else
+		    	setStatus(max, SortItemStatus.SORTED);
+		    popStack();
+		} else {			//Sort partition
+			if(arr.get(i).compareTo(arr.get(pivot))<0){
+				setStatus(i, SortItemStatus.NORMAL);
+				i++;
+				setStatus(i, SortItemStatus.COMPARED);
+			} else if (arr.get(j).compareTo(arr.get(pivot))>0){
+				setStatus(j, SortItemStatus.NORMAL);
+				j--;
+				setStatus(j, SortItemStatus.COMPARED);
+			} else {
+				swap(i,j);
+				if(pivot == i)
+					pivot = j;
+				else if (pivot == j)
+					pivot = i;
+			}
+		}
+	}
+	
+	private void popStack(){
+		try{
+			int[] temp = stack.pop();
+			min = temp[0]; i = min;
+			max = temp[1]; j = max;
+			pivot = (min+max)/2;
+			
+			setStatus(new int[]{i,j}, SortItemStatus.COMPARED);
+			setStatus(pivot, SortItemStatus.PIVOT);
+		} catch (Exception e){
+			timer.stop();
+			main.getControlPanel().stopStopwatch();
+		}
+	}
+	
+	private void setStatus(int index, SortItemStatus status){
+		arr.get(index).setStatus(status);
+	}
+	
+	private void setStatus(int[] indexes, SortItemStatus status){
+		for(int index : indexes)
+			setStatus(index, status);
 	}
 	
 	@Override
@@ -131,6 +195,7 @@ public class ComputerSorter implements ActionListener{
 			switch(sortMethod){
 				case 0:	selectionSort();	break;		
 				case 1: insertionSort();	break;
+				case 2: quickSort();		break;
 			}
 		}
 		main.getGamePanel().repaint();

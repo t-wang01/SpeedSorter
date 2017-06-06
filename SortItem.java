@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 public class SortItem extends Rectangle implements Comparable<SortItem>{
 	private int value;
+	private boolean paused = true;
 	private Color[][] colors;
 	private SortItemStatus status = SortItemStatus.NORMAL;
 	
@@ -41,10 +42,11 @@ public class SortItem extends Rectangle implements Comparable<SortItem>{
 			case COMPARED:		palette = colors[2]; break;
 			case SORTED:		palette = colors[3]; break;
 			case PIVOT:			palette = colors[4]; break;
-			case PAUSED:		palette = colors[5]; break;
-			case FINISHED:		palette = colors[6]; break;
+			case FINISHED:		palette = colors[5]; break;
 			default: palette = null;
 		}
+		if(paused)
+			palette = colors[6];
 		g.setColor(palette[0]);
 		g.fillRect(this.x, this.y, this.width, this.height);
 		g.setColor(palette[1]);
@@ -58,7 +60,11 @@ public class SortItem extends Rectangle implements Comparable<SortItem>{
 		int y = (int) (this.y + this.height/2 - r.getHeight()/2 + fm.getAscent());
 		g.drawString(String.valueOf(value), x, y);
 	}
-
+	
+	public void setPause(boolean isPaused){
+		paused = isPaused;
+	}
+	
 	@Override
 	public int compareTo(SortItem other) {
 		return value - other.value;

@@ -19,10 +19,11 @@ import javax.swing.border.EmptyBorder;
 import org.apache.commons.lang3.time.StopWatch;
 
 public class ControlPanel extends JPanel{
+	private SpeedSorter main;
 	private GamePanel game;
 	private JLabel timeLabel, moveLabel;
 	private JTextField timeField, moveField;
-	private JButton actionButton;
+	private JButton actionButton, backToTitle;
 	private StopWatch stopwatch;
 	private Timer timer;
 	private ComputerSorter comp;
@@ -38,6 +39,7 @@ public class ControlPanel extends JPanel{
 	}
 	
 	public void addGamePanel(SpeedSorter main){
+		this.main = main;
 		game = main.getGamePanel();
 		comp = main.getComputerSorter();
 	}
@@ -58,6 +60,10 @@ public class ControlPanel extends JPanel{
 		actionButton = new JButton("Go!");
 		actionButton.addActionListener(new buttonListener());
 		actionButton.setPreferredSize(new Dimension(90, 30));
+		
+		backToTitle = new JButton("Back to title");
+		backToTitle.addActionListener(new buttonListener());
+		backToTitle.setPreferredSize(new Dimension(90, 30));
 	}
 	
 	private void setUpGUI(){
@@ -81,12 +87,16 @@ public class ControlPanel extends JPanel{
 		
 		this.add(box, gbc);
 		
+		JPanel buttons = new JPanel(new GridLayout(2,1));
+		
+		buttons.add(actionButton); buttons.add(backToTitle);
+		
 		gbc.weighty = 1.5;
 		gbc.gridx = 0;
 		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		
-		this.add(actionButton, gbc);
+		this.add(buttons, gbc);
 		
 		this.setPreferredSize(new Dimension(100, 400));
 	}
@@ -132,18 +142,28 @@ public class ControlPanel extends JPanel{
 			JButton src = (JButton)e.getSource();
 			String text = src.getText();
 			if(text.equals("Go!")){
+				game.pauseArrays(false);
 				timer.start();
 				comp.startTimer();
 				stopwatch.start();
 				src.setText("Pause");
 			} else if(text.equals("Pause")){
+				game.pauseArrays(true);
 				stopwatch.suspend();
 				src.setText("Resume");
 			} else if (text.equals("Resume")){
+				game.pauseArrays(false);
 				stopwatch.resume();
 				src.setText("Pause");
 			} else if (text.equals("Restart")){
 				reset();
+			} else if (text.equals("Back to title")){
+				if(stopwatchIsRunning()){
+					stopwatch.stop();
+				}
+				stopwatch.reset();
+				actionButton.setText("Go!");
+				game.returnToTitle();
 			}
 			
 			game.repaint();

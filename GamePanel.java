@@ -24,7 +24,7 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 	private ComputerSorter comp;
 	private int moves = 0;
 	private int size = 16;
-	private int[][] levelData = {{0, 300},{1, 300}};
+	private int[][] levelData = {{0, 300},{1, 300},{2,300}};
 	private Color[][] colors;
 	
 	public GamePanel(SpeedSorter speedSorter){
@@ -41,8 +41,8 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 					{Color.GRAY, Color.YELLOW},
 					{Color.WHITE, Color.BLACK},
 					{Color.GRAY, Color.GREEN},
-					{Color.DARK_GRAY, Color.BLACK},
-					{Color.WHITE, Color.BLACK}
+					{Color.WHITE, Color.BLACK},
+					{Color.DARK_GRAY, Color.BLACK}
 				};
 		
 		//Set up arrays
@@ -74,6 +74,7 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 	}
 	
 	public void setLevel(int level, boolean isPossible){
+		reset();
 		comp.setMethod(levelData[level-1][0]);
 		if(isPossible)
 			comp.setTimer(levelData[level-1][1]);
@@ -104,8 +105,6 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 			compArr.get(i).setSize(new Dimension(boxWidth, boxHeight));
 			compArr.get(i).setLocation(new Point((2*i+1)*panelWidth/(2*size) - boxWidth/2, incrementY - boxHeight/2));
 			
-			if (!control.stopwatchIsRunning())
-				compArr.get(i).setStatus(SortItemStatus.PAUSED);
 			compArr.get(i).paint(g);
 			
 			humanArr.get(i).setSize(new Dimension(boxWidth, boxHeight));
@@ -113,8 +112,6 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 			
 			if(isInOrder())
 				humanArr.get(i).setStatus(SortItemStatus.FINISHED);
-			else if (!control.stopwatchIsRunning())
-				humanArr.get(i).setStatus(SortItemStatus.PAUSED);
 			else if(humanArr.get(i).equals(i+1))
 				humanArr.get(i).setStatus(SortItemStatus.SORTED);
 			else if(i == dragging || i == swap0 || i == initial)
@@ -144,6 +141,14 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 		control.setMoves(moves);
 	}
 	
+	public void pauseArrays(boolean isPaused){
+		for(SortItem si : humanArr)
+			si.setPause(isPaused);
+		for(SortItem si : compArr)
+			si.setPause(isPaused);
+		repaint();
+	}
+	
 	public void reset(){
 		Collections.shuffle(compArr);
 //		last = new ArrayList<SortItem>(humanArr);
@@ -158,6 +163,11 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 		isDragging = false;
 		dragging = -1;
 		repaint();
+	}
+	
+	public void returnToTitle(){
+		comp.setArray(compArr); //reset ints
+		main.returnToTitle();
 	}
 	
 	private boolean isInOrder(){

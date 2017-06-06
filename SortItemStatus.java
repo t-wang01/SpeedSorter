@@ -5,6 +5,5 @@ public enum SortItemStatus {
 	COMPARED,
 	SORTED,
 	PIVOT,
-	PAUSED,
 	FINISHED
 }

@@ -61,6 +61,21 @@ public class SpeedSorter extends JFrame{
 		repaint();
 	}
 	
+	public void returnToTitle(){
+		remove(panel);
+		
+		panel.remove(game);
+		panel.remove(control);
+		panel.add(menu, BorderLayout.CENTER);
+		
+		add(panel);
+		setSize(500,400);
+		setLocationRelativeTo(null);
+		
+		revalidate();
+		repaint();
+	}
+	
 	public ControlPanel getControlPanel(){
 		return control;
 	}
