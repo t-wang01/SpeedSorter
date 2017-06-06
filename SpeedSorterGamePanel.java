@@ -39,7 +39,6 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 					{Color.LIGHT_GRAY, Color.RED},
 					{Color.LIGHT_GRAY, Color.BLACK},
 					{Color.GRAY, Color.YELLOW},
-					{Color.LIGHT_GRAY, Color.BLACK},
 					{Color.WHITE, Color.BLACK},
 					{Color.GRAY, Color.GREEN},
 					{Color.DARK_GRAY, Color.BLACK},
@@ -82,9 +81,10 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 			comp.setTimer(0);
 	}
 	
-
 	@Override
 	public void paintComponent(Graphics g){
+		int panelWidth = getWidth();
+		
 		//Set background
 		if(isInOrder())
 			super.setBackground(Color.WHITE);
@@ -101,20 +101,16 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 		
 		//Draw boxes
 		for(int i = 0; i < size; i++){
-			compArr.get(i).setSize(new Dimension(boxWidth, boxHeight)); compArr.get(i).setLocation(new Point((2*i+1)*getWidth()/2/size - boxWidth/2, incrementY - boxHeight/2));
-//			if(isInOrder())
-//				compArr.get(i).setStatus(SortItemStatus.FINISHED);
-//			else if (!control.stopwatchIsRunning())
-//				compArr.get(i).setStatus(SortItemStatus.PAUSED);
-//			else if(compArr.get(i).equals(i+1))
-//				humanArr.get(i).setStatus(SortItemStatus.SORTED);
-//			else if(i == dragging || i == swap0 || i == initial)
-//				humanArr.get(i).setStatus(SortItemStatus.SELECTED);
-//			else
-//				humanArr.get(i).setStatus(SortItemStatus.NORMAL);
+			compArr.get(i).setSize(new Dimension(boxWidth, boxHeight));
+			compArr.get(i).setLocation(new Point((2*i+1)*panelWidth/(2*size) - boxWidth/2, incrementY - boxHeight/2));
+			
+			if (!control.stopwatchIsRunning())
+				compArr.get(i).setStatus(SortItemStatus.PAUSED);
 			compArr.get(i).paint(g);
 			
-			humanArr.get(i).setSize(new Dimension(boxWidth, boxHeight)); humanArr.get(i).setLocation(new Point((2*i+1)*getWidth()/2/size - boxWidth/2, 2*incrementY - boxHeight/2));
+			humanArr.get(i).setSize(new Dimension(boxWidth, boxHeight));
+			humanArr.get(i).setLocation(new Point((2*i+1)*panelWidth/(2*size) - boxWidth/2, 2*incrementY - boxHeight/2));
+			
 			if(isInOrder())
 				humanArr.get(i).setStatus(SortItemStatus.FINISHED);
 			else if (!control.stopwatchIsRunning())
@@ -128,14 +124,33 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 			humanArr.get(i).paint(g);
 		}
 		
+		//Draw labels
+		g.setColor(Color.BLACK);
+		
+		//Code modified from Gilbert Le Blanc on https://stackoverflow.com/questions/14284754/
+		Graphics2D g2d = (Graphics2D) g;
+		FontMetrics fm = g2d.getFontMetrics();
+		Rectangle2D r = fm.getStringBounds("COMPUTER ARRAY", g2d);
+		int x = (int) (panelWidth/2 - r.getWidth()/2 + 1);
+		int y = (int) (r.getHeight());
+		g.drawString("COMPUTER ARRAY", x, y);
+		
+		r = fm.getStringBounds("HUMAN ARRAY", g2d);
+		x = (int) (panelWidth/2 - r.getWidth()/2 + 1);
+		y = (int) (getHeight() - r.getHeight()/2);
+		g.drawString("HUMAN ARRAY", x, y);
+		
 		//Change moves field
 		control.setMoves(moves);
 	}
 	
 	public void reset(){
-		Collections.shuffle(humanArr);
-		last = new ArrayList<SortItem>(humanArr);
-		compArr = new ArrayList<SortItem>(humanArr);
+		Collections.shuffle(compArr);
+//		last = new ArrayList<SortItem>(humanArr);
+		for(int i = 0; i < compArr.size(); i++){
+			compArr.set(i, new SortItem(compArr.get(i).getValue(), colors));
+			humanArr.set(i, new SortItem(compArr.get(i).getValue(), colors));
+		}
 		comp.setArray(compArr);
 		moves = 0;
 		swap0 = -1;
@@ -209,7 +224,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	}
 
 	@Override
-	public void mouseDragged(MouseEvent e) {		
+	public void mouseDragged(MouseEvent e) {
 		if(!control.stopwatchIsRunning())
 			return;
 		
@@ -235,7 +250,7 @@ public class SpeedSorterGamePanel  extends JPanel implements MouseListener, Mous
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {		
+	public void mouseReleased(MouseEvent e) {
 		if(!control.stopwatchIsRunning())
 			return;
 		

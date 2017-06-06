@@ -51,31 +51,6 @@ public class SpeedSorterComputerSorter implements ActionListener{
 	public void stopTimer(){
 		timer.stop();
 	}
-
-	private boolean isInOrder(){
-		for(int i = 1; i < arr.size(); i++){
-			if(arr.get(i).compareTo(arr.get(i-1))<0)
-				return false;
-		}
-		main.getControlPanel().stopStopwatch();
-		timer.stop();
-		return true;
-	}
-	
-	public int[] getHighlights(){
-		int[] out = new int[2];
-		switch(sortMethod){
-			case 0:
-				out[0] = j;
-				out[1] = lowInd;
-				break;
-			case 1:
-				out[0] = j-1;
-				out[1] = j;
-		}
-
-		return out;
-	}
 	
 	private void swap(int ind0, int ind1){
 		if(Math.min(ind0, ind1)<0 || Math.max(ind0, ind1)>=arr.size())
@@ -86,24 +61,66 @@ public class SpeedSorterComputerSorter implements ActionListener{
 	}
 
 	private void selectionSort(){
-		if(j != arr.size()){	//search
-			if(arr.get(j).compareTo(arr.get(lowInd))<0)
+		if(j != arr.size()){	//search for lowest value
+			if(j>i && j-1!=lowInd)
+				arr.get(j-1).setStatus(SortItemStatus.NORMAL);
+			
+			//if arr[j]<arr[lowInd], set new lowInd to value of j
+			if(arr.get(j).compareTo(arr.get(lowInd))<0){
+				arr.get(lowInd).setStatus(SortItemStatus.NORMAL);
 				lowInd = j;
+				arr.get(lowInd).setStatus(SortItemStatus.COMPARED);
+			}
+			
+			arr.get(j).setStatus(SortItemStatus.COMPARED);
 			j++;
 		} else {				//finished a loop
 			swap(i, lowInd);
+			arr.get(i).setStatus(SortItemStatus.SORTED);
+			
 			j = ++i;
 			lowInd = i;
+			
+			//Check if finished
+			if(i == arr.size()){
+				main.getControlPanel().stopStopwatch();
+				timer.stop();
+			} else
+				arr.get(arr.size()-1).setStatus(SortItemStatus.NORMAL);
 		}
 	}
 	
 	private void insertionSort(){
 		if(j > 0 && arr.get(j-1).compareTo(arr.get(j))>0){	//insert
+			//Set previous item to sorted
+			if(j!=i)
+				arr.get(j+1).setStatus(SortItemStatus.SORTED);
+			
+			//Set new items to be COMPARED
+			arr.get(j).setStatus(SortItemStatus.COMPARED);
+			arr.get(j-1).setStatus(SortItemStatus.COMPARED);
 			swap(j, j-1);
+			
 			j--;
 		} else {								//finished a loop
-			i++;
-			j = i;
+			//Set statuses back to SORTED
+			if(j!=i)
+				arr.get(j+1).setStatus(SortItemStatus.SORTED);
+			arr.get(j).setStatus(SortItemStatus.SORTED);
+			if(j!=0)
+				arr.get(j-1).setStatus(SortItemStatus.SORTED);
+			
+			j = ++i;
+			
+			if(i == arr.size()){
+				//If finished, stop
+				main.getControlPanel().stopStopwatch();
+				timer.stop();
+			} else {
+				//If not finished, set new items to be COMPARED
+				arr.get(j).setStatus(SortItemStatus.COMPARED);
+				arr.get(j-1).setStatus(SortItemStatus.COMPARED);
+			}
 		}
 		
 	}
@@ -112,12 +129,10 @@ public class SpeedSorterComputerSorter implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		if(main.getControlPanel().stopwatchIsRunning()){
 			switch(sortMethod){
-				case 0:	selectionSort(); 	break;		
+				case 0:	selectionSort();	break;		
 				case 1: insertionSort();	break;
 			}
 		}
 		main.getGamePanel().repaint();
-		if(isInOrder())
-			main.getControlPanel().stopStopwatch();
 	}
 }

@@ -20,8 +20,13 @@ public class SortItem extends Rectangle implements Comparable<SortItem>{
 	public SortItem(int num, Color[][] colorSet){
 		colors = colorSet;
 		value = num;
+		
 		setSize(50,50);
 		setLocation(0,0);
+	}
+	
+	public int getValue(){
+		return value;
 	}
 	
 	public void setStatus (SortItemStatus newStatus){
@@ -34,11 +39,10 @@ public class SortItem extends Rectangle implements Comparable<SortItem>{
 			case NORMAL:		palette = colors[0]; break;
 			case SELECTED:		palette = colors[1]; break;
 			case COMPARED:		palette = colors[2]; break;
-			case SEMISORTED:	palette = colors[3]; break;
-			case SORTED:		palette = colors[4]; break;
-			case PIVOT:			palette = colors[5]; break;
-			case PAUSED:		palette = colors[6]; break;
-			case FINISHED:		palette = colors[7]; break;
+			case SORTED:		palette = colors[3]; break;
+			case PIVOT:			palette = colors[4]; break;
+			case PAUSED:		palette = colors[5]; break;
+			case FINISHED:		palette = colors[6]; break;
 			default: palette = null;
 		}
 		g.setColor(palette[0]);
