@@ -63,8 +63,8 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 		
 		//Set up computer
 		comp.setTimer(300);	//~45s selection sort
-		comp.setArray(compArr);
 		comp.setMethod(0);
+		comp.setArray(compArr);
 		comp.startTimer();
 		
 		setBackground(Color.LIGHT_GRAY);
@@ -73,13 +73,13 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 		addMouseMotionListener(this);
 	}
 	
-	public void setLevel(int level, boolean isPossible){
-		reset();
+	public void setLevel(int level, boolean isPossible){;
 		comp.setMethod(levelData[level-1][0]);
 		if(isPossible)
 			comp.setTimer(levelData[level-1][1]);
 		else
 			comp.setTimer(0);
+		reset();
 	}
 	
 	@Override

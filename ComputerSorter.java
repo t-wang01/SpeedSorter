@@ -34,6 +34,9 @@ public class ComputerSorter implements ActionListener{
 		
 		stack = new ArrayDeque<int[]>();
 		stack.push(new int[]{min, max});
+		
+		if(sortMethod == 2)
+			popStack();
 	}
 	
 	public void setMethod(int sortType){
@@ -131,20 +134,20 @@ public class ComputerSorter implements ActionListener{
 	
 	private void quickSort(){
 		//Modified code from Yaroslav S. on https://stackoverflow.com/questions/19124752/
-		if(j == 0 && i == 0){ //initial
-			popStack();
-		} else if(i >= j){	//Completed a partition
+		if(i >= j){			//Completed a partition
 			setStatus(pivot, SortItemStatus.SORTED);
-			
-		    if(min < (pivot - 1))
-		        stack.add(new int[] {min, pivot - 1});
-		    else
-		    	setStatus(min, SortItemStatus.SORTED);
 		    
-		    if(max > (pivot + 1)) 
+		    if(max > (pivot + 1)) {
 		        stack.add(new int[] {pivot + 1, max});
-		    else
-		    	setStatus(max, SortItemStatus.SORTED);
+		        System.out.println("Added {"+(pivot+1)+", "+max+"} to the stack.");
+		    } else
+		    	setStatus(pivot+1, SortItemStatus.SORTED);
+		    if(min < (pivot - 1)){
+		        stack.add(new int[] {min, pivot - 1});
+		        System.out.println("Added {"+min+", "+(pivot-1)+"} to the stack.");
+		    } else
+		    	setStatus(pivot-1, SortItemStatus.SORTED);
+		    
 		    popStack();
 		} else {			//Sort partition
 			if(arr.get(i).compareTo(arr.get(pivot))<0){
@@ -162,15 +165,18 @@ public class ComputerSorter implements ActionListener{
 				else if (pivot == j)
 					pivot = i;
 			}
+			setStatus(pivot, SortItemStatus.PIVOT);
 		}
 	}
 	
 	private void popStack(){
 		try{
-			int[] temp = stack.pop();
-			min = temp[0]; i = min;
-			max = temp[1]; j = max;
+			int[] temp = stack.pollLast();
+			i = min = temp[0];
+			j = max = temp[1];
 			pivot = (min+max)/2;
+			
+			System.out.println("Popped {"+i+", "+j+"} from the stack.");
 			
 			setStatus(new int[]{i,j}, SortItemStatus.COMPARED);
 			setStatus(pivot, SortItemStatus.PIVOT);
@@ -181,7 +187,11 @@ public class ComputerSorter implements ActionListener{
 	}
 	
 	private void setStatus(int index, SortItemStatus status){
-		arr.get(index).setStatus(status);
+		try {
+			arr.get(index).setStatus(status);
+		} catch (Exception e) {
+			
+		};
 	}
 	
 	private void setStatus(int[] indexes, SortItemStatus status){

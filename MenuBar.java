@@ -53,10 +53,10 @@ public class MenuBar extends JMenuBar implements ActionListener{
 					"How to Play", JOptionPane.PLAIN_MESSAGE);
 		} else if (text.equals("About")){
 			JOptionPane.showMessageDialog(null, 
-					"SpeedSorter v1\n"+
+					"SpeedSorter v3\n"+
 					"By Thomas Wang\n"+
 					"\n"+
-					"Published under MIT Lisense",
+					"Source code available on https://github.com/t-wang01/SpeedSorter",
 					"About", JOptionPane.PLAIN_MESSAGE);
 		}
 	}

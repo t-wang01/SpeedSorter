@@ -13,7 +13,7 @@ public class SpeedSorter extends JFrame{
 	private JPanel panel;
 	
 	public SpeedSorter(){
-		super("SpeedSorter v2");
+		super("SpeedSorter v3");
 		setSize(500, 400);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
