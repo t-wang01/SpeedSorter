@@ -4,19 +4,19 @@ import java.util.ArrayList;
 
 import javax.swing.Timer;
 
-public class SpeedSorterComputerSorter implements ActionListener{
+public class ComputerSorter implements ActionListener{
 	private Timer timer;
 	private ArrayList<SortItem> arr;
 	private SpeedSorter main;
 	private int i = 0, j = 0, lowInd = 0, insInd = 0, sortMethod=0;
 	private boolean insSwapNext = false;
 	
-	public SpeedSorterComputerSorter(SpeedSorter game){
+	public ComputerSorter(SpeedSorter game){
 		main = game;
 		timer = new Timer(500, this);
 	}
 	
-	public SpeedSorterComputerSorter(int sortType, int delay, SpeedSorter speed, ArrayList<SortItem> compArr){
+	public ComputerSorter(int sortType, int delay, SpeedSorter speed, ArrayList<SortItem> compArr){
 		timer = new Timer(delay, this);
 		arr = compArr;
 		main = speed;

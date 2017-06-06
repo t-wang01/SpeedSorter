@@ -10,14 +10,14 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
-public class SpeedSorterTitlePanel extends JPanel implements MouseListener{
+public class TitlePanel extends JPanel implements MouseListener{
 	private SpeedSorter main;
 	private boolean literallyImpossible = false;
 //	private JPanel titleImage;
 //	private JPanel levelOptions;
 //	private JPanel possibilityPanel;
 	
-	public SpeedSorterTitlePanel(SpeedSorter speedSorter){
+	public TitlePanel(SpeedSorter speedSorter){
 		super();
 		
 		main = speedSorter;

@@ -14,20 +14,20 @@ import java.util.Collections;
 
 import javax.swing.JPanel;
 
-public class SpeedSorterGamePanel  extends JPanel implements MouseListener, MouseMotionListener{
+public class GamePanel  extends JPanel implements MouseListener, MouseMotionListener{
 	private ArrayList<SortItem> humanArr, compArr, last;
 	private final int boxHeight = 50, boxWidth = 50;
 	private int swap0 = -1, dragging = -1, initial = -1;
 	private boolean isDragging = false;
 	private SpeedSorter main;
-	private SpeedSorterControlPanel control;
-	private SpeedSorterComputerSorter comp;
+	private ControlPanel control;
+	private ComputerSorter comp;
 	private int moves = 0;
 	private int size = 16;
 	private int[][] levelData = {{0, 300},{1, 300}};
 	private Color[][] colors;
 	
-	public SpeedSorterGamePanel(SpeedSorter speedSorter){
+	public GamePanel(SpeedSorter speedSorter){
 		super();
 				
 		main = speedSorter;

@@ -5,11 +5,11 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 public class SpeedSorter extends JFrame{
-	private SpeedSorterTitlePanel menu;
-	private SpeedSorterGamePanel game;
-	private SpeedSorterControlPanel control;
-	private SpeedSorterMenuBar menuBar;
-	private SpeedSorterComputerSorter comp;
+	private TitlePanel menu;
+	private GamePanel game;
+	private ControlPanel control;
+	private MenuBar menuBar;
+	private ComputerSorter comp;
 	private JPanel panel;
 	
 	public SpeedSorter(){
@@ -18,11 +18,11 @@ public class SpeedSorter extends JFrame{
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		
-		menu = new SpeedSorterTitlePanel(this);
-		comp = new SpeedSorterComputerSorter(this);
-		control = new SpeedSorterControlPanel();
-		menuBar = new SpeedSorterMenuBar(this);
-		game = new SpeedSorterGamePanel(this);
+		menu = new TitlePanel(this);
+		comp = new ComputerSorter(this);
+		control = new ControlPanel();
+		menuBar = new MenuBar(this);
+		game = new GamePanel(this);
 		
 		control.addGamePanel(this);
 
@@ -61,19 +61,19 @@ public class SpeedSorter extends JFrame{
 		repaint();
 	}
 	
-	public SpeedSorterControlPanel getControlPanel(){
+	public ControlPanel getControlPanel(){
 		return control;
 	}
 	
-	public SpeedSorterGamePanel getGamePanel(){
+	public GamePanel getGamePanel(){
 		return game;
 	}
 	
-	public SpeedSorterTitlePanel getMenuPanel(){
+	public TitlePanel getMenuPanel(){
 		return menu;
 	}
 	
-	public SpeedSorterComputerSorter getComputerSorter(){
+	public ComputerSorter getComputerSorter(){
 		return comp;
 	}
 }

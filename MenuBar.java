@@ -6,12 +6,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-public class SpeedSorterMenuBar extends JMenuBar implements ActionListener{
+public class MenuBar extends JMenuBar implements ActionListener{
 	private JMenu file, help;
 	private JMenuItem file_reset, file_exit, help_howToPlay, help_about;
-	private SpeedSorterControlPanel control;
+	private ControlPanel control;
 	
-	public SpeedSorterMenuBar(SpeedSorter main){
+	public MenuBar(SpeedSorter main){
 		super();
 		control = main.getControlPanel();
 		
