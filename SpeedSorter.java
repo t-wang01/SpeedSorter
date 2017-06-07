@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 public class SpeedSorter extends JFrame{
-	private TitlePanel menu;
+	private TitlePanel title;
 	private GamePanel game;
 	private ControlPanel control;
 	private MenuBar menuBar;
@@ -18,7 +18,7 @@ public class SpeedSorter extends JFrame{
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		
-		menu = new TitlePanel(this);
+		title = new TitlePanel(this);
 		comp = new ComputerSorter(this);
 		control = new ControlPanel();
 		menuBar = new MenuBar(this);
@@ -28,7 +28,7 @@ public class SpeedSorter extends JFrame{
 
 		
 		panel = new JPanel(new BorderLayout());
-		panel.add(menu, BorderLayout.CENTER);
+		panel.add(title, BorderLayout.CENTER);
 		
 		setJMenuBar(menuBar);
 		add(panel);
@@ -49,7 +49,7 @@ public class SpeedSorter extends JFrame{
 		
 		remove(panel);
 		
-		panel.remove(menu);
+		panel.remove(title);
 		panel.add(game, BorderLayout.CENTER);
 		panel.add(control, BorderLayout.LINE_END);
 		
@@ -61,12 +61,14 @@ public class SpeedSorter extends JFrame{
 		repaint();
 	}
 	
-	public void returnToTitle(){
+	public void returnToTitle(boolean hasWon, int levelNum){
+		if(hasWon)
+			title.addLevel(levelNum);
 		remove(panel);
 		
 		panel.remove(game);
 		panel.remove(control);
-		panel.add(menu, BorderLayout.CENTER);
+		panel.add(title, BorderLayout.CENTER);
 		
 		add(panel);
 		setSize(500,400);
@@ -85,7 +87,7 @@ public class SpeedSorter extends JFrame{
 	}
 	
 	public TitlePanel getMenuPanel(){
-		return menu;
+		return title;
 	}
 	
 	public ComputerSorter getComputerSorter(){

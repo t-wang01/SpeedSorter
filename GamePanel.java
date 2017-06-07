@@ -25,7 +25,9 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 	private int moves = 0;
 	private int size = 16;
 	private int[][] levelData = {{0, 300},{1, 300},{2,300}};
+	private int level;
 	private Color[][] colors;
+	private boolean humanHasWon = false;
 	
 	public GamePanel(SpeedSorter speedSorter){
 		super();
@@ -73,7 +75,9 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 		addMouseMotionListener(this);
 	}
 	
-	public void setLevel(int level, boolean isPossible){;
+	public void setLevel(int level, boolean isPossible){
+		this.level = level;
+		humanHasWon = false;
 		comp.setMethod(levelData[level-1][0]);
 		if(isPossible)
 			comp.setTimer(levelData[level-1][1]);
@@ -167,7 +171,7 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 	
 	public void returnToTitle(){
 		comp.setArray(compArr); //reset ints
-		main.returnToTitle();
+		main.returnToTitle(humanHasWon, level+1);
 	}
 	
 	private boolean isInOrder(){
@@ -176,6 +180,7 @@ public class GamePanel  extends JPanel implements MouseListener, MouseMotionList
 				return false;
 		}
 		control.stopStopwatch();
+		humanHasWon = true;
 		return true;
 	}
 	

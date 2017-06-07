@@ -16,7 +16,7 @@ import javax.swing.UIManager;
 public class TitlePanel extends JPanel implements MouseListener{
 	private SpeedSorter main;
 	private boolean literallyImpossible = false;
-	private boolean[] levelsUnlocked = new boolean[]{true, true, false};
+	private boolean[] levelsUnlocked = new boolean[]{true, false, false};
 	private Title titleImage = new Title();
 	private JPanel levelsPanel = new JPanel();
 	private Level[] levels = new Level[3];
@@ -59,6 +59,7 @@ public class TitlePanel extends JPanel implements MouseListener{
 //		paintFooter(g);
 	}
 	
+	/*
 	private void paintOptions(Graphics g) {
         Font optionFont = new Font("Arial", Font.BOLD, 15);
         Font infoFont = new Font("Arial", Font.BOLD, 10);
@@ -97,6 +98,7 @@ public class TitlePanel extends JPanel implements MouseListener{
 	        initx += width;
 		}
 	}
+	*/
 	
 	private void paintImpossibleBox(Graphics g) {
 		int initx = getWidth()/4, inity = getHeight()*7/10;
@@ -134,11 +136,11 @@ public class TitlePanel extends JPanel implements MouseListener{
 //				main.menuToGame(2, !literallyImpossible);
 //			}
 //		}
-		//Toggled possibility
-		if(Math.abs(y-getHeight()*7.5/10)<=getHeight()/10 && Math.abs(x-getWidth()/2)<=getWidth()/4){
-			literallyImpossible = !literallyImpossible;
-			repaint();
-		}
+//		//Toggled possibility
+//		if(Math.abs(y-getHeight()*7.5/10)<=getHeight()/10 && Math.abs(x-getWidth()/2)<=getWidth()/4){
+//			literallyImpossible = !literallyImpossible;
+//			repaint();
+//		}
 	}
 
 	@Override
@@ -152,6 +154,20 @@ public class TitlePanel extends JPanel implements MouseListener{
 
 	@Override
 	public void mouseReleased(MouseEvent e) {}
+	
+	public void selectLevel(int levelNum){
+		main.menuToGame(levelNum, !literallyImpossible);
+	}
+	
+	public void addLevel(int levelNum){
+		System.out.println("add level "+levelNum+" "+levelsUnlocked[levelNum-1]);
+		if(!levelsUnlocked[levelNum-1]){
+			levelsUnlocked[levelNum-1] = true;
+			levelsPanel.add(levels[levelNum-1]);
+			repaint();
+			System.out.println("success");
+		}
+	}
 	
 	private class Title extends JPanel{
 		public Title(){

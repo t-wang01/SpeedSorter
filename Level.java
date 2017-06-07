@@ -74,7 +74,7 @@ public class Level extends JComponent implements MouseListener{
 
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
-		
+		title.selectLevel(levelNum);
 	}
 
 	@Override
