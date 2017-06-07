@@ -161,8 +161,7 @@ public class ControlPanel extends JPanel{
 				if(stopwatchIsRunning()){
 					stopwatch.stop();
 				}
-				stopwatch.reset();
-				actionButton.setText("Go!");
+				reset();
 				game.returnToTitle();
 			}
 			

@@ -13,7 +13,7 @@ import java.awt.geom.Rectangle2D;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
-public class TitlePanel extends JPanel implements MouseListener{
+public class TitlePanel extends JPanel{
 	private SpeedSorter main;
 	private boolean literallyImpossible = false;
 	private boolean[] levelsUnlocked = new boolean[]{true, false, false};
@@ -28,14 +28,14 @@ public class TitlePanel extends JPanel implements MouseListener{
 		super();
 		
 		main = speedSorter;
-		
-		addMouseListener(this);
-		
+				
 		setBackground(Color.GRAY);
 		
 		GridLayout levelsLayout = new GridLayout(1,0);
-		for(int i = 0; i < 3; i++)
+		for(int i = 0; i < 3; i++){
 			levels[i] = new Level(i+1, levelData[i][0], levelData[i][1], this);
+			levels[i].setBoxSize(new Dimension(getWidth()/4, getHeight()/4));
+		}
 		levelsPanel.setLayout(levelsLayout);
 		levelsPanel.add(levels[0]);
 		
@@ -44,62 +44,22 @@ public class TitlePanel extends JPanel implements MouseListener{
 		add(titleImage);
 		add(levelsPanel);
 		add(footerPanel);
+		
+		levelsPanel.setBackground(this.getBackground());
+		footerPanel.setBackground(this.getBackground());
 	}
 	
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
-//		
-//		paintTitle(g);
-//		
-//		paintOptions(g);
-//		
-//		paintImpossibleBox(g);
-//		
-//		paintFooter(g);
-	}
-	
-	/*
-	private void paintOptions(Graphics g) {
-        Font optionFont = new Font("Arial", Font.BOLD, 15);
-        Font infoFont = new Font("Arial", Font.BOLD, 10);
-        
-		int initx = getWidth()/6;
-		int inity = getHeight()*2/5;
-		int gap = getWidth()/24;
-		int width = getWidth()/3;
-		int height = getHeight()/4;
-		String[] options = {"Level 1","Level 2"};
-		String[] infos = {"Selection sort 300ms","Insertion sort 300ms"};
 		
-		for(int i = 0; i < 2; i++){
-			if(!levelsUnlocked[i])
-				break;
-			
-			g.setColor(Color.BLACK);
-			g.drawRect(initx+gap, inity, width-(2*gap), height);
-			
-			g.setFont(optionFont);
-			//Code modified from Gilbert Le Blanc on https://stackoverflow.com/questions/14284754/
-			Graphics2D g2d = (Graphics2D) g;
-	        FontMetrics fm = g2d.getFontMetrics();
-			Rectangle2D r = fm.getStringBounds(options[i], g2d);
-	        int x = initx + width/2 - (int) r.getWidth() / 2;
-	        int y = inity + height/2 - (int) r.getHeight() / 2 + fm.getAscent() - 8;
-	        g.drawString(options[i], x, y);
-	        
-	        g.setFont(infoFont);
-	        fm = g2d.getFontMetrics();
-			r = fm.getStringBounds(infos[i], g2d);
-	        x = initx + width/2 - (int) r.getWidth() / 2;
-	        y = inity + height/2 - (int) r.getHeight() / 2 + fm.getAscent() + 10;
-	        g.drawString(infos[i], x, y);
-	        
-	        initx += width;
-		}
+		int boxWidth = getWidth()/4,
+			boxHeight = getHeight()/4;
+		
+		for(Level l : levels)
+			l.setBoxSize(new Dimension(boxWidth, boxHeight));
 	}
-	*/
-	
+
 	private void paintImpossibleBox(Graphics g) {
 		int initx = getWidth()/4, inity = getHeight()*7/10;
 		int width = getWidth()/2, height = getHeight()/10;  
@@ -124,48 +84,18 @@ public class TitlePanel extends JPanel implements MouseListener{
         g.drawString(text, x, y);
 	}
 	
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		int x = e.getX(), y = e.getY();
-		
-//		//Selected a level
-//		if(Math.abs(y-getHeight()*21/40)<=getHeight()/8){
-//			if(Math.abs(x-getWidth()/3)<=getWidth()*7/24){
-//				main.menuToGame(1, !literallyImpossible);
-//			} else if (Math.abs(x-getWidth()*2/3)<=getWidth()*7/24){
-//				main.menuToGame(2, !literallyImpossible);
-//			}
-//		}
-//		//Toggled possibility
-//		if(Math.abs(y-getHeight()*7.5/10)<=getHeight()/10 && Math.abs(x-getWidth()/2)<=getWidth()/4){
-//			literallyImpossible = !literallyImpossible;
-//			repaint();
-//		}
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {}
-
-	@Override
-	public void mouseExited(MouseEvent e) {}
-
-	@Override
-	public void mousePressed(MouseEvent e) {}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {}
-	
 	public void selectLevel(int levelNum){
 		main.menuToGame(levelNum, !literallyImpossible);
 	}
 	
 	public void addLevel(int levelNum){
-		System.out.println("add level "+levelNum+" "+levelsUnlocked[levelNum-1]);
+		//if there is a new level to unlock
 		if(!levelsUnlocked[levelNum-1]){
+			//unlock and add the new level
 			levelsUnlocked[levelNum-1] = true;
+//			levels[levelNum-1].setLocation(new Point(getWidth()/(levelNum), levels[levelNum-1].getY()));
 			levelsPanel.add(levels[levelNum-1]);
 			repaint();
-			System.out.println("success");
 		}
 	}
 	
@@ -187,30 +117,76 @@ public class TitlePanel extends JPanel implements MouseListener{
 	        FontMetrics fm = g2d.getFontMetrics();
 			Rectangle2D r = fm.getStringBounds(title, g2d);
 	        int x = (this.getWidth() - (int) r.getWidth()) / 2;
-	        int y = this.getHeight() / 4 - (int) r.getHeight() / 2 + fm.getAscent();
+	        int y = (this.getHeight() - (int) r.getHeight()) / 2 + fm.getAscent();
 	        g.drawString(title, x, y);
 		}
 	}
 	
-	private class Footer extends JPanel{
+	private class Footer extends JPanel implements MouseListener{
 		public Footer(){
-			
+			addMouseListener(this);
 		}
 		
 		@Override
 		public void paintComponent(Graphics g){
-			Font font = new Font("Arial", Font.PLAIN, 11);
+			super.paintComponent(g);
 			
+			int initx = getWidth()/4, inity = 0;
+			int width = getWidth()/2, height = getHeight()/3;  
+			Font font = new Font("Arial", Font.PLAIN, 14);
 			g.setFont(font);
-			String title = "Made by Thomas Wang pls give me an A";
+			
+			g.drawRect(initx, inity, width, height);
+
+			String text = "Literally Impossible mode: ";
+			if(literallyImpossible){
+				text += "ON";
+			} else {
+				text += "OFF";
+			}
 			
 			//Code modified from Gilbert Le Blanc on https://stackoverflow.com/questions/14284754/
 			Graphics2D g2d = (Graphics2D) g;
 	        FontMetrics fm = g2d.getFontMetrics();
-			Rectangle2D r = fm.getStringBounds(title, g2d);
-	        int x = (this.getWidth() - (int) r.getWidth()) / 2;
-	        int y = this.getHeight() - (int) r.getHeight() / 2;
-	        g.drawString(title, x, y);
+			Rectangle2D r = fm.getStringBounds(text, g2d);
+	        int x = initx + width/2 - (int) r.getWidth() / 2;
+	        int y = inity + height/2 - (int) r.getHeight() / 2 + fm.getAscent();
+	        g.drawString(text, x, y);
+	        
+			font = new Font("Arial", Font.PLAIN, 11);
+			
+			g.setFont(font);
+			String footer = "Made by Thomas Wang pls give me an A";
+			
+			//Code modified from Gilbert Le Blanc on https://stackoverflow.com/questions/14284754/
+	        fm = g2d.getFontMetrics();
+			r = fm.getStringBounds(footer, g2d);
+	        x = (this.getWidth() - (int) r.getWidth()) / 2;
+	        y = this.getHeight() - (int) r.getHeight() / 2;
+	        g.drawString(footer, x, y);
 		}
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			int x = e.getX(), y = e.getY();
+
+			//Toggled possibility
+			if(Math.abs(y-getHeight()/6)<=getHeight()/6 && Math.abs(x-getWidth()/2)<=getWidth()/4){
+				literallyImpossible = !literallyImpossible;
+				repaint();
+			}
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+
+		@Override
+		public void mouseExited(MouseEvent e) {}
+
+		@Override
+		public void mousePressed(MouseEvent e) {}
+
+		@Override
+		public void mouseReleased(MouseEvent e) {}
 	}
 }

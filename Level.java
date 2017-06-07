@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 public class Level extends JComponent implements MouseListener{
 	private TitlePanel title;
 	private int levelNum, sortType, delay;
+	private Dimension boxSize;
 	private Font optionFont = new Font("Arial", Font.BOLD, 15), 
 			     infoFont = new Font("Arial", Font.BOLD, 10);
 	
@@ -25,20 +26,26 @@ public class Level extends JComponent implements MouseListener{
 		delay = wait;
 		title = titlePanel;
 		
+		boxSize = new Dimension(50,50);
+		
 		setLocation(new Point(0,0));
 		setSize(new Dimension(50,50));
 		
 		addMouseListener(this);
+		
+		setBackground(Color.GRAY);
 	}
 	
 	@Override
 	public void paintComponent(Graphics g){
-		int x = getX(), y = getY(), width = getWidth(), height = getHeight();
-		
+		int x = getWidth()/2 - boxSize.width/2, 
+			y = getHeight()/2 - boxSize.height/2,
+			width = getWidth(), height = getHeight();
+				
 		g.setColor(Color.GRAY);
-		g.fillRect(x, y, width, height);
+		g.fillRect(x, y, boxSize.width, boxSize.height);
 		g.setColor(Color.BLACK);
-		g.drawRect(x, y, width, height);
+		g.drawRect(x, y, boxSize.width, boxSize.height);
 		
 		g.setFont(optionFont);
 		//Code modified from Gilbert Le Blanc on https://stackoverflow.com/questions/14284754/
@@ -59,7 +66,11 @@ public class Level extends JComponent implements MouseListener{
         g.drawString(info, x, y);
 	}
 	
-	public int levelNum(){
+	public void setBoxSize(Dimension size){
+		boxSize = size;
+	}
+	
+	public int getLevelNum(){
 		return levelNum;
 	}
 	
@@ -73,19 +84,23 @@ public class Level extends JComponent implements MouseListener{
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		title.selectLevel(levelNum);
+	public void mouseClicked(MouseEvent e) {
+		int x = e.getX(), y = e.getY();
+		
+		if(Math.abs(x-getWidth()/2) < boxSize.width/2 &&
+			Math.abs(y-getHeight()/2) < boxSize.height/2)
+			title.selectLevel(levelNum);
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {}
+	public void mouseEntered(MouseEvent e) {}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {}
+	public void mouseExited(MouseEvent e) {}
 
 	@Override
-	public void mousePressed(MouseEvent arg0) {}
+	public void mousePressed(MouseEvent e) {}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {}
+	public void mouseReleased(MouseEvent e) {}
 }

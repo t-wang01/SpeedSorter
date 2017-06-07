@@ -139,12 +139,10 @@ public class ComputerSorter implements ActionListener{
 		    
 		    if(max > (pivot + 1)) {
 		        stack.add(new int[] {pivot + 1, max});
-		        System.out.println("Added {"+(pivot+1)+", "+max+"} to the stack.");
 		    } else
 		    	setStatus(pivot+1, SortItemStatus.SORTED);
 		    if(min < (pivot - 1)){
 		        stack.add(new int[] {min, pivot - 1});
-		        System.out.println("Added {"+min+", "+(pivot-1)+"} to the stack.");
 		    } else
 		    	setStatus(pivot-1, SortItemStatus.SORTED);
 		    
