@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,6 +16,7 @@ public class SpeedSorter extends JFrame{
 	public SpeedSorter(){
 		super("SpeedSorter v3");
 		setSize(500, 400);
+		setMinimumSize(new Dimension(435,225));
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
 		
@@ -45,6 +47,8 @@ public class SpeedSorter extends JFrame{
 	}
 	
 	public void menuToGame(int level, boolean isPossible){
+		setMinimumSize(new Dimension(947,225));
+		menuBar.enterGame();
 		game.setLevel(level, isPossible);
 		
 		remove(panel);
@@ -62,6 +66,8 @@ public class SpeedSorter extends JFrame{
 	}
 	
 	public void returnToTitle(boolean hasWon, int levelNum){
+		setMinimumSize(new Dimension(435,225));
+		menuBar.exitGame();
 		if(hasWon)
 			title.addLevel(levelNum);
 		remove(panel);

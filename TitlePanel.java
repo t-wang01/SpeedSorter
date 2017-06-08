@@ -45,6 +45,7 @@ public class TitlePanel extends JPanel{
 		add(levelsPanel);
 		add(footerPanel);
 		
+		titleImage.setBackground(this.getBackground());
 		levelsPanel.setBackground(this.getBackground());
 		footerPanel.setBackground(this.getBackground());
 	}
@@ -107,6 +108,8 @@ public class TitlePanel extends JPanel{
 		
 		@Override
 		public void paintComponent(Graphics g){
+			super.paintComponent(g);
+			
 			Font font = new Font("Arial", Font.BOLD, 30);
 			
 			g.setFont(font);

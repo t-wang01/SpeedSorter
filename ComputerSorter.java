@@ -12,7 +12,6 @@ public class ComputerSorter implements ActionListener{
 	private SpeedSorter main;
 	private int i = 0, j = 0, lowInd = 0, min = 0, max = 0, pivot = 0, sortMethod=0;
 	private Deque<int[]> stack = new ArrayDeque<int[]>();
-	private boolean insSwapNext = false;
 	
 	public ComputerSorter(SpeedSorter game){
 		main = game;
