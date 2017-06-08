@@ -90,13 +90,17 @@ public class TitlePanel extends JPanel{
 	}
 	
 	public void addLevel(int levelNum){
-		//if there is a new level to unlock
-		if(!levelsUnlocked[levelNum-1]){
-			//unlock and add the new level
-			levelsUnlocked[levelNum-1] = true;
-//			levels[levelNum-1].setLocation(new Point(getWidth()/(levelNum), levels[levelNum-1].getY()));
-			levelsPanel.add(levels[levelNum-1]);
-			repaint();
+		try{
+			//if there is a new level to unlock
+			if(!levelsUnlocked[levelNum-1]){
+				//unlock and add the new level
+				levelsUnlocked[levelNum-1] = true;
+//				levels[levelNum-1].setLocation(new Point(getWidth()/(levelNum), levels[levelNum-1].getY()));
+				levelsPanel.add(levels[levelNum-1]);
+				repaint();
+			}
+		} catch (Exception e){
+			
 		}
 	}
 	

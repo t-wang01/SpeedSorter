@@ -172,9 +172,7 @@ public class ComputerSorter implements ActionListener{
 			i = min = temp[0];
 			j = max = temp[1];
 			pivot = (min+max)/2;
-			
-			System.out.println("Popped {"+i+", "+j+"} from the stack.");
-			
+						
 			setStatus(new int[]{i,j}, SortItemStatus.COMPARED);
 			setStatus(pivot, SortItemStatus.PIVOT);
 		} catch (Exception e){
